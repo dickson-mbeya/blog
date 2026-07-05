@@ -1,0 +1,271 @@
+---
+title: "Mapping COP16: Cali, Colombia's City of Peace with Nature"
+description: "A step-by-step cartographic walkthrough of how I built a COP16-themed map of Cali, Colombia using R, sf, and tmap — part of my 2025 #30DayMapChallenge series."
+author: "Dickson Mbeya"
+date: "2026-07-05"
+categories: [cartography, R, 30DayMapChallenge, biodiversity]
+image: "data/cali.png"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Why this map
+
+In 2024, Cali, Colombia hosted **COP16**, the UN Biodiversity Conference, under the
+theme *"Peace with Nature."* As someone working at the intersection of GIS and
+biodiversity policy, I wanted to mark the occasion with a map that does two things
+at once: locate Cali clearly within Colombia, and carry the visual identity of the
+COP16 event itself — its logo, its colors, its hashtags.
+
+This post walks through exactly how the map was built in R, chunk by chunk, so you
+can adapt the same approach for your own event or city-focused maps.
+
+The tools of choice are:
+
+- **`sf`** — for reading and handling vector spatial data (country boundaries, city points)
+- **`tmap`** — for thematic map rendering, including custom logos and credits
+- **`ggplot2`** — loaded as a general plotting utility, though `tmap` does the heavy lifting here
+
+```{r}
+#| label: setup
+#| include: false
+library(sf)
+library(tmap)
+library(ggplot2)
+```
+
+## Step 1: Load the spatial data
+
+Every map starts with data. Here I bring in four spatial layers:
+
+1. **`colombia`** — the national administrative boundary (admin level 0), sourced
+   from a standard `admbnda` shapefile.
+2. **`cali`** — a single-feature layer just for the city of Cali, which gets the
+   special COP16 logo treatment.
+3. **`colombia_cities`** — a broader set of major Colombian cities, shown as
+   secondary reference points.
+4. **`world`** — a global boundary layer, loaded here for context but not directly
+   plotted in this version of the map.
+
+I also point to two logo image files that will be layered onto the final map later:
+the COP16 event logo (used as a custom point symbol for Cali) and the COP16
+wordmark (used as a corner logo).
+
+```{r}
+#| label: load-data
+
+colombia        <- st_read("data/col_admbnda_adm0_mgn_itos_20200416.shp", quiet = TRUE)
+cali            <- st_read("data/cali.shp", quiet = TRUE)
+colombia_cities <- st_read("data/colombiancities.shp", quiet = TRUE)
+
+logo <- "data/COP16_logo.png"
+logoWords <- "data/cop-16-logo_120.png"
+```
+
+## Step 2: Draw the country outline
+
+The base layer is Colombia's national boundary, styled in forest green
+(`#228B22`) to evoke the "nature" half of "Peace with Nature." A `lwd` of `2`
+keeps the border visible without overpowering the city symbols that follow.
+
+```{r}
+#| label: country-outline
+#| eval: false
+
+tm_shape(colombia) +
+  tm_borders(col = "#228B22", lwd = 2)
+```
+
+## Step 3: Give Cali the spotlight
+
+This is the layer that makes the map distinctly *about COP16*. Instead of a
+generic dot, Cali is marked with the COP16 event logo itself via
+`tm_symbols(shape = logo, ...)`. Underneath it, `tm_labels()` writes out the
+city name in a bold rust-red (`#bc3110`), offset slightly up and to the right
+(`xmod`/`ymod`) so the text doesn't collide with the logo icon.
+
+```{r}
+#| label: cali-highlight
+#| eval: false
+
+tm_shape(cali) +
+  tm_symbols(shape = tmap_icons(logo), size = 0.5) +
+  tm_labels(
+    "city",
+    size = 2,
+    col = "#bc3110",
+    fontface = "bold",
+    just = c("left", "bottom"),
+    xmod = 0.6,
+    ymod = 0.1
+  )
+```
+
+## Step 4: Add context with other major cities
+
+To help readers orient Cali within the country, I plot a set of other major
+Colombian cities as smaller reference symbols — orange fill (`#ffa101`) with a
+rust outline (`#bc3110`) — each labeled in a muted olive tone (`#b3ac8b`) at a
+much smaller size so they support the map without competing with Cali.
+
+```{r}
+#| label: context-cities
+#| eval: false
+
+tm_shape(colombia_cities) +
+  tm_symbols(col = "#bc3110", fill = "#ffa101", lwd = 3, size = 0.6) +
+  tm_labels(
+    "city",
+    size = 0.7,
+    col = "#b3ac8b",
+    fontface = "bold",
+    just = c("left", "bottom"),
+    xmod = 0.5,
+    ymod = 0.5
+  )
+```
+
+## Step 5: Branding — logos and credits
+
+A few finishing touches give the map its editorial identity:
+
+- The **COP16 wordmark logo** sits in the top-left corner.
+- **Event hashtags** (`#PeaceWithNature`, `#CountryOfBeauty`, `#CaliColombia`,
+  `#COP16`) appear as bottom-left credits in a deep blue (`#1a5783`), doubling
+  as both attribution and a nod to the conference's social media campaign.
+- A **cartographer credit line** (name and date) sits just below the hashtags,
+  in a neutral grey so it doesn't distract from the campaign messaging.
+- An **R logo** in the top-right corner signals the tool used to build the map
+  — a nice touch for a technical or portfolio audience.
+
+```{r}
+#| label: branding
+#| eval: false
+
+tm_logo(logoWords, position = c("left", "top"), height = 8) +
+  tm_credits(
+    "#PeaceWithNature\n#CountryOfBeauty\n#CaliColombia\n#COP16\n\n",
+    position = c("left", "bottom"),
+    size = 1,
+    color = "#1a5783"
+  ) +
+  tm_credits(
+    "Cartographer: Dickson Mbeya\n05 July 2026",
+    position = c("left", "bottom"),
+    size = 0.8,
+    color = "grey20"
+  ) +
+  tm_logo("data/r.png", position = c("right", "top"), height = 1.5)
+```
+
+## Step 6: Frame it
+
+Finally, a double frame effect: an outer navy-blue frame (`#1a5783`, `lwd = 2`)
+and an inner gold frame (`#efaf48`, `lwd = 1`) applied via two stacked
+`tm_layout()` calls. Layering `tm_layout()` calls like this lets you build up
+frame effects that would be hard to express in a single call, since `tmap`
+merges layout options progressively.
+
+```{r}
+#| label: frame
+#| eval: false
+
+tm_layout(
+  frame = TRUE,
+  frame.lwd = 2,
+  frame.col = c("#1a5783")
+) +
+tm_layout(
+  frame = TRUE,
+  frame.lwd = 1,
+  frame.col = c("#efaf48")
+)
+```
+
+## Putting it all together
+
+Here's the full map, assembled from every layer above into a single `tmap`
+object and rendered in static plot mode.
+
+```{r}
+#| label: build-and-render-map
+#| fig-width: 9
+#| fig-height: 9
+
+colombia_map <- tm_shape(colombia) +
+  tm_borders(col = "#228B22", lwd = 2) +
+  tm_shape(cali) +
+  tm_symbols(shape = tmap_icons(logo), size = 0.5) +
+  tm_labels(
+    "city",
+    size = 2,
+    col = "#bc3110",
+    fontface = "bold",
+    just = c("left", "bottom"),
+    xmod = 0.6,
+    ymod = 0.1
+  ) +
+  tm_shape(colombia_cities) +
+  tm_symbols(col = "#bc3110", fill = "#ffa101", lwd = 3, size = 0.6) +
+  tm_labels(
+    "city",
+    size = 0.7,
+    col = "#b3ac8b",
+    fontface = "bold",
+    just = c("left", "bottom"),
+    xmod = 0.5,
+    ymod = 0.5
+  ) +
+  tm_logo(logoWords, position = c("left", "top"), height = 8) +
+  tm_credits(
+    "#PeaceWithNature\n#CountryOfBeauty\n#CaliColombia\n#COP16\n\n",
+    position = c("left", "bottom"),
+    size = 1,
+    color = "#1a5783"
+  ) +
+  tm_credits(
+    "Cartographer: Dickson Mbeya\n05 July 2026",
+    position = c("left", "bottom"),
+    size = 0.8,
+    color = "grey20"
+  ) +
+  tm_logo("data/r.png", position = c("right", "top"), height = 1.5) +
+  tm_layout(
+    frame = TRUE,
+    frame.lwd = 2,
+    frame.col = c("#1a5783")
+  ) +
+  tm_layout(
+    frame = TRUE,
+    frame.lwd = 1,
+    frame.col = c("#efaf48")
+  )
+
+tmap_mode("plot")
+colombia_map
+```
+
+## Takeaways
+
+A few reusable lessons from this build, useful beyond just COP16 maps:
+
+- **Custom logos as point symbols** (`tm_symbols(shape = tmap_icons("path/to/logo.png"))`)
+  are an easy way to turn a plain location marker into something that carries
+  event or brand identity. Remember to wrap the path in `tmap_icons()`, since
+  a raw file path isn't a valid `shape` value on its own.
+- **Stacked `tm_layout()` calls** let you compose layered visual effects (like
+  a double frame) that would otherwise need custom grid graphics.
+
+If you're working on your own event or conference map, the same six-step
+structure boundary, feature highlight, context layer, branding, framing,
+render should adapt cleanly to most `tmap` projects.
+
+*Happy mapping, everyone!*\
+*– Dickson*

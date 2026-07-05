@@ -1,0 +1,235 @@
+---
+title: "Which Districts Had the Largest Population in Malawi in 2008?"
+description: "A step-by-step cartographic walkthrough of how I built a thematic map that shows population for Malawi's districts using labels for symbology using R, sf, and tmap — part of my 2025 #30DayMapChallenge series."
+author: "Dickson Mbeya"
+date: "2026-07-05"
+categories: [Mapping, R, POPULATION]
+image: "population.png"
+---
+
+## Introduction
+
+I decided to visualise Malawi's district population from the 2008 census. Instead of a traditional filled‑polygon choropleth, I used a **typographic map**—where the district names are scaled by their population. This technique makes the data self‑explanatory and adds an elegant, text‑heavy aesthetic that works well for social media.
+
+Today I'll walk you through the entire R workflow, from loading the shapefiles to adding an Africa locator inset. Let's dive in!
+
+------------------------------------------------------------------------
+
+## 1. Load the required packages
+
+We need a handful of specialised packages:
+
+-   **`sf`** – reads and handles spatial vector data (shapefiles).
+-   **`tmap`** – our main mapping engine; it uses a grammar of graphics similar to `ggplot2` but is tailored for maps.
+-   **`dplyr`** – for quick data manipulation (renaming columns).
+-   **`extrafont`** – to use system fonts like *Roboto* for a modern, clean look. If you haven't used `extrafont` before, you can run `font_import()` and `loadfonts()` once to make your system fonts available in R.
+
+```{r}
+#| message: false
+#| warning: false
+library(tmap)
+library(dplyr)
+library(sf)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+popn <- st_read("data/mw_popn.shp")
+bnd <- st_read("data/mw_bnd.shp")
+```
+
+## 2. Read the spatial data
+
+The data comes from the **Malawi National Statistical Office** and contains district boundaries and population counts for 2008.
+
+In this example I store the shapefiles inside a `data/` folder relative to the project root. This makes the script portable and reproducible.
+
+First, I read the population point/centroid layer which contains the district names and population counts:
+
+```{r}
+popn <- st_read("data/mw_popn.shp")
+```
+
+Next, I read the district boundary polygon layer which will serve as the background map:
+
+```{r}
+bnd <- st_read("data/mw_bnd.shp")
+```
+
+Let's inspect the population data to see what columns we have:
+
+```{r}
+head(popn)
+```
+
+Looking at the output, I can see the column `TOTAL2008` holds the total population for each district. I'll rename it to something more intuitive for our mapping:
+
+```{r}
+popn <- popn %>%
+  rename(Population = TOTAL2008)
+```
+
+Now we have a clean attribute called `Population` that we can use in our map.
+
+------------------------------------------------------------------------
+
+## 3. Design the main typographic map
+
+This is the heart of the visual. Instead of colouring polygons, I use `tm_text()` to place the district names directly on the map. The `size` argument is mapped to the `Population` column—so larger populations appear in bigger text.
+
+Let's break down the styling choices:
+
+**Background** – a very light grey (`"grey99"`) for the districts, with thin grey borders (`"grey70"`). This keeps the focus on the text.
+
+**Text colour** – bright orange (`"orange"`) stands out beautifully against the light grey.
+
+**Layout** – I added generous inner margins so the text doesn't touch the frame. The frame itself is rounded (`frame.r = 10`) and coloured orange to tie the design together.
+
+**Legend** – I place it at the top right (position `c(0.7, 0.8)`) with a light grey frame.
+
+**Title** – a multi‑line, attention‑grabbing question. The title is placed on the right side, with a white background to improve readability.
+
+**Credits** – three separate credits cover the challenge tag, my name, and the data source. I use `Roboto` throughout for consistency.
+
+```{r}
+#| fig-width: 10
+#| fig-height: 8
+mypop <- tm_shape(bnd) + 
+  tm_polygons(fill = "grey99", col = "grey70") +
+  
+  tm_shape(popn) + 
+  tm_text(text = "DISTRICT", 
+          size = "Population", 
+          col = "orange", 
+          fontface = "bold") + 
+  
+  tm_layout(inner.margins = c(0.02, 0.3, 0.02, 0.3),
+            outer.margins = c(0.03, 0.02, 0.03, 0.02),
+            frame.r = 10,
+            frame.lwd = 1,
+            frame.color = "orange",
+            legend.frame.lwd = 1,
+            legend.frame.color = "grey80",
+            legend.title.fontfamily = "Roboto Light",
+            legend.position = c(0.7, 0.8)) + 
+  
+  tm_title("Which Districts\nHad the Largest\nPopulation in Malawi\nin 2008?", 
+           color = "orange",
+           size = 1.2,
+           bg = TRUE,
+           bg.alpha = 1,
+           position = c("right", "top"),
+           frame = FALSE) +
+  
+  tm_credits("Date: 05 July 2026",
+             position = c("left", "bottom"),
+             size = 0.7, color = "orange",
+             fontfamily = "Roboto") + 
+  
+  tm_credits("© Dickson Mbeya",
+             position = c("center", "bottom"),
+             size = 0.7, color = "orange",
+             fontfamily = "Roboto") +   
+  tm_credits("Data Source: Malawi\nNational Statistical Office\n\nwww.dicksonmbeya.com",
+             fontfamily = "Roboto",
+             position = c("right", "bottom"),
+             size = 0.6, color = "orange")
+```
+
+> **Why text‑sized names instead of a classic choropleth?**\
+> Because readers can immediately identify the largest districts without needing to consult a legend. The text itself becomes the visual variable, which is both intuitive and visually striking.
+
+------------------------------------------------------------------------
+
+## 4. Build a locator inset map
+
+When you share maps online, not everyone knows exactly where Malawi is. A small **locator map** solves that problem.
+
+I use an **orthographic projection** centered on Malawi's coordinates (`lat_0 = -13.98`, `lon_0 = 33.77`). This creates a globe‑like effect that makes the country pop out from the rest of Africa.
+
+First, I load the world dataset using the `rnaturalearth` package:
+
+```{r}
+library(rnaturalearth)
+world <- ne_countries(scale = "medium", returnclass = "sf")
+```
+
+Next, I define the orthographic projection and transform both the world and Malawi boundaries:
+
+```{r}
+ortho_crs <- "+proj=ortho +lat_0=-13.98 +lon_0=33.77"
+world_ortho <- st_transform(world, crs = ortho_crs)
+bnd_ortho <- st_transform(bnd, crs = ortho_crs)
+```
+
+Now I build the locator map. African countries are filled with light grey, while Malawi is outlined in bright orange:
+
+```{r}
+locator_map <- tm_shape(world_ortho) +
+  tm_polygons(col = "grey80", border.col = "white", lwd = 0.3) +
+  tm_shape(bnd_ortho) +
+  tm_borders(col = "orange", lwd = 1) +
+  tm_layout(frame = FALSE, bg.color = "white")
+```
+
+The white background and no frame ensure the inset integrates cleanly with the main map.
+
+------------------------------------------------------------------------
+
+## 5. Combine everything with `tm_inset()`
+
+Now I overlay the locator map onto the main map using `tm_inset()`.
+
+I set the inset size to `9` which works well with the existing layout dimensions. The position `c(0, 0.3)` places it at the left side, slightly below the top margin.
+
+```{r}
+#| fig-width: 10
+#| fig-height: 8
+final_map <- mypop +
+  tm_inset(locator_map,
+           width = 9,
+           height = 9,
+           position = c(0, 0.3))
+
+final_map
+```
+
+------------------------------------------------------------------------
+
+## 6. Save the final output
+
+You can export the map as a high‑resolution PNG for sharing on social media, in presentations, or for print.
+
+```{r}
+#tmap_save(final_map, "2008_Population.png", width = 10, height = 8, dpi = 300)
+```
+
+------------------------------------------------------------------------
+
+## What the map reveals
+
+Looking at the scaled district names, **Lilongwe** (the capital), **Blantyre** (the commercial hub), and **Mzimba** (the northern giant) clearly dominate the population distribution. The text‑size approach makes this pattern visible instantly—without needing a separate colour legend.
+
+The map also reveals interesting spatial patterns: - The central region (Lilongwe) has the highest population - The southern region (Blantyre) is the second most populated - The northern region (Mzimba) has large populations but more spread out
+
+------------------------------------------------------------------------
+
+## Final thoughts
+
+This map was a fun exercise in using `tmap`'s typographic capabilities. By focusing on text rather than fill colours, I created a poster‑style visual that is both informative and decorative.
+
+**Key takeaways for your own maps:**
+
+-   Don't be afraid to use `tm_text()` for quantitative data – size scaling works beautifully
+-   Always add a locator inset when your audience might be global
+-   Small typographic touches (fonts, frame colours, margin control) elevate the final product
+-   Using a light background with bold text creates a clean, professional look
+
+If you have any questions about the code or want to adapt it for your own country, feel free to reach out!
+
+------------------------------------------------------------------------
+
+*Happy mapping, everyone!*\
+*– Dickson*
+

@@ -1,0 +1,21 @@
+project:
+  type: website
+
+website:
+  title: "Rala Maps | Dickson Mbeya"
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/dickson-mbeya
+      - icon: linkedin
+        href: https://www.linkedin.com/in/dickson-mbeya/
+format:
+  html:
+    theme:
+      - United
+      - brand
+    css: styles.css
+
+
+

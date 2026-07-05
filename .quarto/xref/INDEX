@@ -1,0 +1,20 @@
+{
+  "index.qmd": {
+    "index.html": "9e45349a"
+  },
+  "about.qmd": {
+    "about.html": "768edf65"
+  },
+  "posts/post-with-code/index.qmd": {
+    "index.html": "24ce7c53"
+  },
+  "posts/welcome/index.qmd": {
+    "index.html": "bd5b4baa"
+  },
+  "posts/make_popn_map/index.qmd": {
+    "index.html": "99e84b7e"
+  },
+  "posts/cop16/index.qmd": {
+    "index.html": "70bc7125"
+  }
+}

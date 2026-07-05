@@ -1,0 +1,16 @@
+---
+title: "Blog"
+title-block-banner: "banner.png"
+title-block-banner-color: "white"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+
+---
+
+
