@@ -167,6 +167,11 @@ window.Quarto = {
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="./index.xml"> <i class="bi bi-rss" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
   <li class="nav-item">
     <a class="nav-link" href="./about.html"> 
 <span class="menu-text">About</span></a>
@@ -210,7 +215,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="MzBEYXlNYXBDaGFsbGVuZ2U=">30DayMapChallenge <span class="quarto-category-count">(1)</span></div><div class="category" data-category="YmlvZGl2ZXJzaXR5">biodiversity <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y2FydG9ncmFwaHk=">cartography <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TWFwcGluZw==">Mapping <span class="quarto-category-count">(1)</span></div><div class="category" data-category="bmV3cw==">news <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UE9QVUxBVElPTg==">POPULATION <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Ug==">R <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="MzBEYXlNYXBDaGFsbGVuZ2U=">30DayMapChallenge <span class="quarto-category-count">(1)</span></div><div class="category" data-category="YmlvZGl2ZXJzaXR5">biodiversity <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Y2FydG9ncmFwaHk=">cartography <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TWFwcGluZw==">Mapping <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UE9QVUxBVElPTg==">POPULATION <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Ug==">R <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
@@ -260,7 +265,7 @@ Dickson Mbeya
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="TWFwcGluZyUyQ1IlMkNQT1BVTEFUSU9O" data-listing-date-sort="1783202400000" data-listing-file-modified-sort="1783287603704" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1442">
+<div class="quarto-post image-right" data-index="1" data-categories="TWFwcGluZyUyQ1IlMkNQT1BVTEFUSU9O" data-listing-date-sort="1783202400000" data-listing-file-modified-sort="1783289313119" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="8" data-listing-word-count-sort="1442">
 <div class="thumbnail"><a href="./posts/make_popn_map/index.html" class="no-external">
 
 <img loading="lazy" src="./posts/make_popn_map/population.png" class="thumbnail-image">
@@ -290,36 +295,6 @@ Jul 5, 2026
 </div>
 <div class="listing-author">
 Dickson Mbeya
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="bmV3cw==" data-listing-date-sort="1782856800000" data-listing-file-modified-sort="1783287603707" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="32">
-<div class="thumbnail"><a href="./posts/welcome/index.html" class="no-external">
-
-<p class="card-img-top"><img src="posts\welcome\thumbnail.jpg"  class="thumbnail-image card-img"/></p>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/welcome/index.html" class="no-external">Welcome To My Blog</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('bmV3cw=='); return false;">news</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/welcome/index.html" class="no-external">
-This is the first post in a Quarto blog. Welcome!
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/welcome/index.html" class="no-external">
-<div class="listing-date">
-Jul 1, 2026
-</div>
-<div class="listing-author">
-Tristan O’Malley
 </div>
 </a>
 </div>
@@ -399,7 +374,7 @@ Tristan O’Malley
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/dicksonmbeya\.com\/blog");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
