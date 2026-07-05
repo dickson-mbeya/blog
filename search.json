@@ -1,0 +1,163 @@
+[
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "posts/cop16/index.html",
+    "href": "posts/cop16/index.html",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "",
+    "text": "In 2024, Cali, Colombia hosted COP16, the UN Biodiversity Conference, under the theme “Peace with Nature.” As someone working at the intersection of GIS and biodiversity policy, I wanted to mark the occasion with a map that does two things at once: locate Cali clearly within Colombia, and carry the visual identity of the COP16 event itself — its logo, its colors, its hashtags.\nThis post walks through exactly how the map was built in R, chunk by chunk, so you can adapt the same approach for your own event or city-focused maps.\nThe tools of choice are:\n\nsf — for reading and handling vector spatial data (country boundaries, city points)\ntmap — for thematic map rendering, including custom logos and credits\nggplot2 — loaded as a general plotting utility, though tmap does the heavy lifting here"
+  },
+  {
+    "objectID": "posts/cop16/index.html#why-this-map",
+    "href": "posts/cop16/index.html#why-this-map",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "",
+    "text": "In 2024, Cali, Colombia hosted COP16, the UN Biodiversity Conference, under the theme “Peace with Nature.” As someone working at the intersection of GIS and biodiversity policy, I wanted to mark the occasion with a map that does two things at once: locate Cali clearly within Colombia, and carry the visual identity of the COP16 event itself — its logo, its colors, its hashtags.\nThis post walks through exactly how the map was built in R, chunk by chunk, so you can adapt the same approach for your own event or city-focused maps.\nThe tools of choice are:\n\nsf — for reading and handling vector spatial data (country boundaries, city points)\ntmap — for thematic map rendering, including custom logos and credits\nggplot2 — loaded as a general plotting utility, though tmap does the heavy lifting here"
+  },
+  {
+    "objectID": "posts/cop16/index.html#step-1-load-the-spatial-data",
+    "href": "posts/cop16/index.html#step-1-load-the-spatial-data",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Step 1: Load the spatial data",
+    "text": "Step 1: Load the spatial data\nEvery map starts with data. Here I bring in four spatial layers:\n\ncolombia — the national administrative boundary (admin level 0), sourced from a standard admbnda shapefile.\ncali — a single-feature layer just for the city of Cali, which gets the special COP16 logo treatment.\ncolombia_cities — a broader set of major Colombian cities, shown as secondary reference points.\nworld — a global boundary layer, loaded here for context but not directly plotted in this version of the map.\n\nI also point to two logo image files that will be layered onto the final map later: the COP16 event logo (used as a custom point symbol for Cali) and the COP16 wordmark (used as a corner logo).\n\ncolombia        &lt;- st_read(\"data/col_admbnda_adm0_mgn_itos_20200416.shp\", quiet = TRUE)\ncali            &lt;- st_read(\"data/cali.shp\", quiet = TRUE)\ncolombia_cities &lt;- st_read(\"data/colombiancities.shp\", quiet = TRUE)\n\nlogo &lt;- \"data/COP16_logo.png\"\nlogoWords &lt;- \"data/cop-16-logo_120.png\""
+  },
+  {
+    "objectID": "posts/cop16/index.html#step-2-draw-the-country-outline",
+    "href": "posts/cop16/index.html#step-2-draw-the-country-outline",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Step 2: Draw the country outline",
+    "text": "Step 2: Draw the country outline\nThe base layer is Colombia’s national boundary, styled in forest green (#228B22) to evoke the “nature” half of “Peace with Nature.” A lwd of 2 keeps the border visible without overpowering the city symbols that follow.\n\ntm_shape(colombia) +\n  tm_borders(col = \"#228B22\", lwd = 2)"
+  },
+  {
+    "objectID": "posts/cop16/index.html#step-3-give-cali-the-spotlight",
+    "href": "posts/cop16/index.html#step-3-give-cali-the-spotlight",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Step 3: Give Cali the spotlight",
+    "text": "Step 3: Give Cali the spotlight\nThis is the layer that makes the map distinctly about COP16. Instead of a generic dot, Cali is marked with the COP16 event logo itself via tm_symbols(shape = logo, ...). Underneath it, tm_labels() writes out the city name in a bold rust-red (#bc3110), offset slightly up and to the right (xmod/ymod) so the text doesn’t collide with the logo icon.\n\ntm_shape(cali) +\n  tm_symbols(shape = tmap_icons(logo), size = 0.5) +\n  tm_labels(\n    \"city\",\n    size = 2,\n    col = \"#bc3110\",\n    fontface = \"bold\",\n    just = c(\"left\", \"bottom\"),\n    xmod = 0.6,\n    ymod = 0.1\n  )"
+  },
+  {
+    "objectID": "posts/cop16/index.html#step-4-add-context-with-other-major-cities",
+    "href": "posts/cop16/index.html#step-4-add-context-with-other-major-cities",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Step 4: Add context with other major cities",
+    "text": "Step 4: Add context with other major cities\nTo help readers orient Cali within the country, I plot a set of other major Colombian cities as smaller reference symbols — orange fill (#ffa101) with a rust outline (#bc3110) — each labeled in a muted olive tone (#b3ac8b) at a much smaller size so they support the map without competing with Cali.\n\ntm_shape(colombia_cities) +\n  tm_symbols(col = \"#bc3110\", fill = \"#ffa101\", lwd = 3, size = 0.6) +\n  tm_labels(\n    \"city\",\n    size = 0.7,\n    col = \"#b3ac8b\",\n    fontface = \"bold\",\n    just = c(\"left\", \"bottom\"),\n    xmod = 0.5,\n    ymod = 0.5\n  )"
+  },
+  {
+    "objectID": "posts/cop16/index.html#step-5-branding-logos-and-credits",
+    "href": "posts/cop16/index.html#step-5-branding-logos-and-credits",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Step 5: Branding — logos and credits",
+    "text": "Step 5: Branding — logos and credits\nA few finishing touches give the map its editorial identity:\n\nThe COP16 wordmark logo sits in the top-left corner.\nEvent hashtags (#PeaceWithNature, #CountryOfBeauty, #CaliColombia, #COP16) appear as bottom-left credits in a deep blue (#1a5783), doubling as both attribution and a nod to the conference’s social media campaign.\nA cartographer credit line (name and date) sits just below the hashtags, in a neutral grey so it doesn’t distract from the campaign messaging.\nAn R logo in the top-right corner signals the tool used to build the map — a nice touch for a technical or portfolio audience.\n\n\ntm_logo(logoWords, position = c(\"left\", \"top\"), height = 8) +\n  tm_credits(\n    \"#PeaceWithNature\\n#CountryOfBeauty\\n#CaliColombia\\n#COP16\\n\\n\",\n    position = c(\"left\", \"bottom\"),\n    size = 1,\n    color = \"#1a5783\"\n  ) +\n  tm_credits(\n    \"Cartographer: Dickson Mbeya\\n05 July 2026\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.8,\n    color = \"grey20\"\n  ) +\n  tm_logo(\"data/r.png\", position = c(\"right\", \"top\"), height = 1.5)"
+  },
+  {
+    "objectID": "posts/cop16/index.html#step-6-frame-it",
+    "href": "posts/cop16/index.html#step-6-frame-it",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Step 6: Frame it",
+    "text": "Step 6: Frame it\nFinally, a double frame effect: an outer navy-blue frame (#1a5783, lwd = 2) and an inner gold frame (#efaf48, lwd = 1) applied via two stacked tm_layout() calls. Layering tm_layout() calls like this lets you build up frame effects that would be hard to express in a single call, since tmap merges layout options progressively.\n\ntm_layout(\n  frame = TRUE,\n  frame.lwd = 2,\n  frame.col = c(\"#1a5783\")\n) +\ntm_layout(\n  frame = TRUE,\n  frame.lwd = 1,\n  frame.col = c(\"#efaf48\")\n)"
+  },
+  {
+    "objectID": "posts/cop16/index.html#putting-it-all-together",
+    "href": "posts/cop16/index.html#putting-it-all-together",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Putting it all together",
+    "text": "Putting it all together\nHere’s the full map, assembled from every layer above into a single tmap object and rendered in static plot mode.\n\ncolombia_map &lt;- tm_shape(colombia) +\n  tm_borders(col = \"#228B22\", lwd = 2) +\n  tm_shape(cali) +\n  tm_symbols(shape = tmap_icons(logo), size = 0.5) +\n  tm_labels(\n    \"city\",\n    size = 2,\n    col = \"#bc3110\",\n    fontface = \"bold\",\n    just = c(\"left\", \"bottom\"),\n    xmod = 0.6,\n    ymod = 0.1\n  ) +\n  tm_shape(colombia_cities) +\n  tm_symbols(col = \"#bc3110\", fill = \"#ffa101\", lwd = 3, size = 0.6) +\n  tm_labels(\n    \"city\",\n    size = 0.7,\n    col = \"#b3ac8b\",\n    fontface = \"bold\",\n    just = c(\"left\", \"bottom\"),\n    xmod = 0.5,\n    ymod = 0.5\n  ) +\n  tm_logo(logoWords, position = c(\"left\", \"top\"), height = 8) +\n  tm_credits(\n    \"#PeaceWithNature\\n#CountryOfBeauty\\n#CaliColombia\\n#COP16\\n\\n\",\n    position = c(\"left\", \"bottom\"),\n    size = 1,\n    color = \"#1a5783\"\n  ) +\n  tm_credits(\n    \"Cartographer: Dickson Mbeya\\n05 July 2026\",\n    position = c(\"left\", \"bottom\"),\n    size = 0.8,\n    color = \"grey20\"\n  ) +\n  tm_logo(\"data/r.png\", position = c(\"right\", \"top\"), height = 1.5) +\n  tm_layout(\n    frame = TRUE,\n    frame.lwd = 2,\n    frame.col = c(\"#1a5783\")\n  ) +\n  tm_layout(\n    frame = TRUE,\n    frame.lwd = 1,\n    frame.col = c(\"#efaf48\")\n  )\n\ntmap_mode(\"plot\")\ncolombia_map"
+  },
+  {
+    "objectID": "posts/cop16/index.html#takeaways",
+    "href": "posts/cop16/index.html#takeaways",
+    "title": "Mapping COP16: Cali, Colombia’s City of Peace with Nature",
+    "section": "Takeaways",
+    "text": "Takeaways\nA few reusable lessons from this build, useful beyond just COP16 maps:\n\nCustom logos as point symbols (tm_symbols(shape = tmap_icons(\"path/to/logo.png\"))) are an easy way to turn a plain location marker into something that carries event or brand identity — remember to wrap the path in tmap_icons(), since a raw file path isn’t a valid shape value on its own.\nStacked tm_layout() calls let you compose layered visual effects (like a double frame) that would otherwise need custom grid graphics.\nColor as message: green for nature, rust-red for emphasis, navy and gold for framing — every color choice here ties back to the COP16 “Peace with Nature” theme rather than being arbitrary.\n\nIf you’re working on your own event or conference map, the same six-step structure — boundary, feature highlight, context layer, branding, framing, render — should adapt cleanly to most tmap projects."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog\nWelcome! This blog is dedicated to helping GIS professionals, students, researchers, and geospatial enthusiasts build practical skills in Geographic Information Systems (GIS), remote sensing, spatial analysis, and geospatial programming.\nWhether you’re just getting started or looking to improve your workflows, you’ll find tips amd tricks, best practices, and real-world examples designed to make geospatial technologies easier to understand and apply.\n\n\nAbout the author\nDickson Mbeya is a Malawian geospatial professional with over eight years of experience in GIS, remote sensing, cartography, and biodiversity informatics. He leads spatial assessments for national biodiversity policy, manage donor-funded conservation projects, and build geospatial capacity across government and academia. His work spans ecosystem mapping, land-cover classification, accessibility analysis, and web-based spatial information systems with a consistent focus on translating technical outputs into policy-relevant evidence. Dickson is a founder of R for GIS and Remote Sensing Mentorship Program and the QGIS Mastery Mentorship Program."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Blog",
+    "section": "",
+    "text": "Mapping COP16: Cali, Colombia’s City of Peace with Nature\n\n\n\ncartography\n\nR\n\n30DayMapChallenge\n\nbiodiversity\n\n\n\nA step-by-step cartographic walkthrough of how I built a COP16-themed map of Cali, Colombia using R, sf, and tmap — part of my 2025 #30DayMapChallenge series.\n\n\n\n\n\nJul 5, 2026\n\n\nDickson Mbeya\n\n\n\n\n\n\n\n\n\n\n\n\nWhich Districts Had the Largest Population in Malawi in 2008?\n\n\n\nMapping\n\nR\n\nPOPULATION\n\n\n\nA step-by-step cartographic walkthrough of how I built a thematic map that shows population for Malawi’s districts using labels for symbology using R, sf, and tmap — part of my 2025 #30DayMapChallenge series.\n\n\n\n\n\nJul 5, 2026\n\n\nDickson Mbeya\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJul 1, 2026\n\n\nTristan O’Malley\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html",
+    "href": "posts/make_popn_map/index.html",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "",
+    "text": "I decided to visualise Malawi’s district population from the 2008 census. Instead of a traditional filled‑polygon choropleth, I used a typographic map—where the district names are scaled by their population. This technique makes the data self‑explanatory and adds an elegant, text‑heavy aesthetic that works well for social media.\nToday I’ll walk you through the entire R workflow, from loading the shapefiles to adding an Africa locator inset. Let’s dive in!"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#introduction",
+    "href": "posts/make_popn_map/index.html#introduction",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "",
+    "text": "I decided to visualise Malawi’s district population from the 2008 census. Instead of a traditional filled‑polygon choropleth, I used a typographic map—where the district names are scaled by their population. This technique makes the data self‑explanatory and adds an elegant, text‑heavy aesthetic that works well for social media.\nToday I’ll walk you through the entire R workflow, from loading the shapefiles to adding an Africa locator inset. Let’s dive in!"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#load-the-required-packages",
+    "href": "posts/make_popn_map/index.html#load-the-required-packages",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "1. Load the required packages",
+    "text": "1. Load the required packages\nWe need a handful of specialised packages:\n\nsf – reads and handles spatial vector data (shapefiles).\ntmap – our main mapping engine; it uses a grammar of graphics similar to ggplot2 but is tailored for maps.\ndplyr – for quick data manipulation (renaming columns).\nextrafont – to use system fonts like Roboto for a modern, clean look. If you haven’t used extrafont before, you can run font_import() and loadfonts() once to make your system fonts available in R.\n\n\nlibrary(tmap)\nlibrary(dplyr)\nlibrary(sf)\n\n\n\npopn &lt;- st_read(\"data/mw_popn.shp\")\n\nReading layer `mw_popn' from data source \n  `C:\\Users\\devmbeya\\Documents\\blog\\posts\\make_popn_map\\data\\mw_popn.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 32 features and 23 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 3636988 ymin: -1935618 xmax: 3998420 ymax: -1047139\nProjected CRS: WGS 84 / Pseudo-Mercator\n\nbnd &lt;- st_read(\"data/mw_bnd.shp\")\n\nReading layer `mw_bnd' from data source \n  `C:\\Users\\devmbeya\\Documents\\blog\\posts\\make_popn_map\\data\\mw_bnd.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 22 features and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 464479.7 ymin: 8105086 xmax: 814025.4 ymax: 8964834\nProjected CRS: WGS 84 / UTM zone 36S"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#read-the-spatial-data",
+    "href": "posts/make_popn_map/index.html#read-the-spatial-data",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "2. Read the spatial data",
+    "text": "2. Read the spatial data\nThe data comes from the Malawi National Statistical Office and contains district boundaries and population counts for 2008.\nIn this example I store the shapefiles inside a data/ folder relative to the project root. This makes the script portable and reproducible.\nFirst, I read the population point/centroid layer which contains the district names and population counts:\n\npopn &lt;- st_read(\"data/mw_popn.shp\")\n\nReading layer `mw_popn' from data source \n  `C:\\Users\\devmbeya\\Documents\\blog\\posts\\make_popn_map\\data\\mw_popn.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 32 features and 23 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 3636988 ymin: -1935618 xmax: 3998420 ymax: -1047139\nProjected CRS: WGS 84 / Pseudo-Mercator\n\n\nNext, I read the district boundary polygon layer which will serve as the background map:\n\nbnd &lt;- st_read(\"data/mw_bnd.shp\")\n\nReading layer `mw_bnd' from data source \n  `C:\\Users\\devmbeya\\Documents\\blog\\posts\\make_popn_map\\data\\mw_bnd.shp' \n  using driver `ESRI Shapefile'\nSimple feature collection with 22 features and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 464479.7 ymin: 8105086 xmax: 814025.4 ymax: 8964834\nProjected CRS: WGS 84 / UTM zone 36S\n\n\nLet’s inspect the population data to see what columns we have:\n\nhead(popn)\n\nSimple feature collection with 6 features and 23 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 3667131 ymin: -1884697 xmax: 3932595 ymax: -1047139\nProjected CRS: WGS 84 / Pseudo-Mercator\n      DIST_NAME      DISTRICT  REGION Shape__Are Shape__Len\n1        Balaka        Balaka Central 2309288545  227264.32\n2      Blantyre      Blantyre   South 1935900658  314395.31\n3 Blantyre City Blantyre City   South  261111996   92609.81\n4      Chikwawa      Chikwawa   South 5318053799  413383.01\n5    Chiradzulu    Chiradzulu   South  825563720  184760.60\n6       Chitipa       Chitipa   North 4499298409  627147.82\n                                GlobalID CreationDa Creator   EditDate Editor\n1 {7732b160-5d5f-4f3c-a381-d8e5bbe4f9c2} 2022-02-06  mbeyad 2022-02-07 mbeyad\n2 {1f059ed3-7289-4a55-a6d5-9b45872048fe} 2022-02-06  mbeyad 2022-02-07 mbeyad\n3 {ead7d5d2-408f-4cce-bcba-827bb9a71dab} 2022-02-06  mbeyad 2022-02-07 mbeyad\n4 {3ea276d9-a990-4a77-8e3b-d2807b223417} 2022-02-06  mbeyad 2022-02-07 mbeyad\n5 {fa51c606-08ea-4b41-8340-ba68833bad02} 2022-02-06  mbeyad 2022-02-07 mbeyad\n6 {20595550-2501-44ae-8f91-5786859edc50} 2022-02-06  mbeyad 2022-02-07 mbeyad\n  MALE1998 FEM1998 TOTAL1998 MALE2008 FEM2008 TOTAL2008 FEM2018 TOTAL2018\n1   120706  132397    253103   151637  165111    316748  229105    438379\n2   413429  395968    809397   164546  173501    338047  232756    451220\n3        0       0    502053   337655  323789    661444  399092    800264\n4   178217  178465    356682   217981  220914    438895  287794    564684\n5   111376  124674    236050   137194  153752    290946  187196    356875\n6    60682   66117    126799    86152   92920    179072  120535    234927\n  MALE2018 POPDEN2008 POPDEN1998  AREA_KM2 DEN2018\n1   209274        148        119 2133.8513     205\n2   218464        189        453 1788.3027     252\n3   401172       2805       2129  235.8099    3394\n4   276890         90         73 4891.6565     115\n5   169679        382        310  762.5165     468\n6   114392         42         30 4247.7344      55\n                        geometry\n1 MULTIPOLYGON (((3916682 -16...\n2 MULTIPOLYGON (((3908694 -17...\n3 MULTIPOLYGON (((3905701 -17...\n4 MULTIPOLYGON (((3822326 -17...\n5 MULTIPOLYGON (((3913071 -17...\n6 MULTIPOLYGON (((3673613 -10...\n\n\nLooking at the output, I can see the column TOTAL2008 holds the total population for each district. I’ll rename it to something more intuitive for our mapping:\n\npopn &lt;- popn %&gt;%\n  rename(Population = TOTAL2008)\n\nNow we have a clean attribute called Population that we can use in our map."
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#design-the-main-typographic-map",
+    "href": "posts/make_popn_map/index.html#design-the-main-typographic-map",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "3. Design the main typographic map",
+    "text": "3. Design the main typographic map\nThis is the heart of the visual. Instead of colouring polygons, I use tm_text() to place the district names directly on the map. The size argument is mapped to the Population column—so larger populations appear in bigger text.\nLet’s break down the styling choices:\nBackground – a very light grey (\"grey99\") for the districts, with thin grey borders (\"grey70\"). This keeps the focus on the text.\nText colour – bright orange (\"orange\") stands out beautifully against the light grey.\nLayout – I added generous inner margins so the text doesn’t touch the frame. The frame itself is rounded (frame.r = 10) and coloured orange to tie the design together.\nLegend – I place it at the top right (position c(0.7, 0.8)) with a light grey frame.\nTitle – a multi‑line, attention‑grabbing question. The title is placed on the right side, with a white background to improve readability.\nCredits – three separate credits cover the challenge tag, my name, and the data source. I use Roboto throughout for consistency.\n\nmypop &lt;- tm_shape(bnd) + \n  tm_polygons(fill = \"grey99\", col = \"grey70\") +\n  \n  tm_shape(popn) + \n  tm_text(text = \"DISTRICT\", \n          size = \"Population\", \n          col = \"orange\", \n          fontface = \"bold\") + \n  \n  tm_layout(inner.margins = c(0.02, 0.3, 0.02, 0.3),\n            outer.margins = c(0.03, 0.02, 0.03, 0.02),\n            frame.r = 10,\n            frame.lwd = 1,\n            frame.color = \"orange\",\n            legend.frame.lwd = 1,\n            legend.frame.color = \"grey80\",\n            legend.title.fontfamily = \"Roboto Light\",\n            legend.position = c(0.7, 0.8)) + \n  \n  tm_title(\"Which Districts\\nHad the Largest\\nPopulation in Malawi\\nin 2008?\", \n           color = \"orange\",\n           size = 1.2,\n           bg = TRUE,\n           bg.alpha = 1,\n           position = c(\"right\", \"top\"),\n           frame = FALSE) +\n  \n  tm_credits(\"Date: 05 July 2026\",\n             position = c(\"left\", \"bottom\"),\n             size = 0.7, color = \"orange\",\n             fontfamily = \"Roboto\") + \n  \n  tm_credits(\"© Dickson Mbeya\",\n             position = c(\"center\", \"bottom\"),\n             size = 0.7, color = \"orange\",\n             fontfamily = \"Roboto\") +   \n  tm_credits(\"Data Source: Malawi\\nNational Statistical Office\\n\\nwww.dicksonmbeya.com\",\n             fontfamily = \"Roboto\",\n             position = c(\"right\", \"bottom\"),\n             size = 0.6, color = \"orange\")\n\n\nWhy text‑sized names instead of a classic choropleth?\nBecause readers can immediately identify the largest districts without needing to consult a legend. The text itself becomes the visual variable, which is both intuitive and visually striking."
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#build-a-locator-inset-map",
+    "href": "posts/make_popn_map/index.html#build-a-locator-inset-map",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "4. Build a locator inset map",
+    "text": "4. Build a locator inset map\nWhen you share maps online, not everyone knows exactly where Malawi is. A small locator map solves that problem.\nI use an orthographic projection centered on Malawi’s coordinates (lat_0 = -13.98, lon_0 = 33.77). This creates a globe‑like effect that makes the country pop out from the rest of Africa.\nFirst, I load the world dataset using the rnaturalearth package:\n\nlibrary(rnaturalearth)\n\nWarning: package 'rnaturalearth' was built under R version 4.5.3\n\nworld &lt;- ne_countries(scale = \"medium\", returnclass = \"sf\")\n\nNext, I define the orthographic projection and transform both the world and Malawi boundaries:\n\northo_crs &lt;- \"+proj=ortho +lat_0=-13.98 +lon_0=33.77\"\nworld_ortho &lt;- st_transform(world, crs = ortho_crs)\nbnd_ortho &lt;- st_transform(bnd, crs = ortho_crs)\n\nNow I build the locator map. African countries are filled with light grey, while Malawi is outlined in bright orange:\n\nlocator_map &lt;- tm_shape(world_ortho) +\n  tm_polygons(col = \"grey80\", border.col = \"white\", lwd = 0.3) +\n  tm_shape(bnd_ortho) +\n  tm_borders(col = \"orange\", lwd = 1) +\n  tm_layout(frame = FALSE, bg.color = \"white\")\n\n\n\n\n── tmap v3 code detected ───────────────────────────────────────────────────────\n\n\n[v3-&gt;v4] `tm_polygons()`: use 'fill' for the fill color of polygons/symbols\n(instead of 'col'), and 'col' for the outlines (instead of 'border.col').\nThis message is displayed once every 8 hours.\n\n\nThe white background and no frame ensure the inset integrates cleanly with the main map."
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#combine-everything-with-tm_inset",
+    "href": "posts/make_popn_map/index.html#combine-everything-with-tm_inset",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "5. Combine everything with tm_inset()",
+    "text": "5. Combine everything with tm_inset()\nNow I overlay the locator map onto the main map using tm_inset().\nI set the inset size to 9 which works well with the existing layout dimensions. The position c(0, 0.3) places it at the left side, slightly below the top margin.\n\nfinal_map &lt;- mypop +\n  tm_inset(locator_map,\n           width = 9,\n           height = 9,\n           position = c(0, 0.3))\n\nfinal_map\n\nWarning in graphics::strwidth(comp$title, units = \"inch\", cex = titleS, : font\nfamily not found in Windows font database\n\n\nWarning in graphics::strwidth(comp$text, units = \"inch\", family =\ncomp$fontfamily, : font family not found in Windows font database\n\n\nWarning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :\nfont family not found in Windows font database\nWarning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :\nfont family not found in Windows font database\nWarning in grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y, :\nfont family not found in Windows font database"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#save-the-final-output",
+    "href": "posts/make_popn_map/index.html#save-the-final-output",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "6. Save the final output",
+    "text": "6. Save the final output\nYou can export the map as a high‑resolution PNG for sharing on social media, in presentations, or for print.\n\n#tmap_save(final_map, \"2008_Population.png\", width = 10, height = 8, dpi = 300)"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#what-the-map-reveals",
+    "href": "posts/make_popn_map/index.html#what-the-map-reveals",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "What the map reveals",
+    "text": "What the map reveals\nLooking at the scaled district names, Lilongwe (the capital), Blantyre (the commercial hub), and Mzimba (the northern giant) clearly dominate the population distribution. The text‑size approach makes this pattern visible instantly—without needing a separate colour legend.\nThe map also reveals interesting spatial patterns: - The central region (Lilongwe) has the highest population - The southern region (Blantyre) is the second most populated - The northern region (Mzimba) has large populations but more spread out"
+  },
+  {
+    "objectID": "posts/make_popn_map/index.html#final-thoughts",
+    "href": "posts/make_popn_map/index.html#final-thoughts",
+    "title": "Which Districts Had the Largest Population in Malawi in 2008?",
+    "section": "Final thoughts",
+    "text": "Final thoughts\nThis map was a fun exercise in using tmap’s typographic capabilities. By focusing on text rather than fill colours, I created a poster‑style visual that is both informative and decorative.\nKey takeaways for your own maps:\n\nDon’t be afraid to use tm_text() for quantitative data – size scaling works beautifully\nAlways add a locator inset when your audience might be global\nSmall typographic touches (fonts, frame colours, margin control) elevate the final product\nUsing a light background with bold text creates a clean, professional look\n\nIf you have any questions about the code or want to adapt it for your own country, feel free to reach out!\n\nHappy mapping, everyone!\n– Dickson"
+  }
+]
