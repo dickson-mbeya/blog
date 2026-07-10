@@ -418,94 +418,34 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 <p>I remembered that I had not labelled my map polygons. I went back to my map and, after right-clicking on the <code>world_cup_participants</code> layer in the Layers panel, I selected <strong>Show Labels</strong> in the context menu:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/show_labels.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/show_labels.png" class="img-fluid"></p>
 <p>Nothing showed on the map even after I had selected <strong>Show Labels</strong>. I needed to tell QGIS which field values would be used to label the polygons. To do that, I opened the Layer Properties of the <code>world_cup_participants</code> layer. In the Layer Properties dialog, I selected the <strong>Labels</strong> tab. In the <strong>Value</strong> field, I selected the <strong>NAME</strong> field. For the <strong>Text</strong>, I selected the <strong>Roboto</strong> font, <strong>Regular</strong> style, and reduced the default size to 6.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/label_text.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/label_text.png" class="img-fluid"></p>
 <p>To make sure the labels stood out against the background, I gave the text a white buffer of size 0.5 with 50% opacity:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/buffer_text.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/buffer_text.png" class="img-fluid"></p>
 <p>As a final touch to my labels, I enabled <strong>Draw drop shadow</strong>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/shadow.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/shadow.png" class="img-fluid"></p>
 <p>I was happy with my map labels, so I continued working in the Print Layout:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/labeled_map.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/labeled_map.png" class="img-fluid"></p>
 </section>
 <section id="adding-items-to-the-map-layout" class="level2">
 <h2 class="anchored" data-anchor-id="adding-items-to-the-map-layout">Adding items to the Map Layout</h2>
 <p>To add the map to the layout, I used the <strong>Add Item</strong> menu and then selected <strong>Add Map</strong>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/add_map.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/add_map.png" class="img-fluid"></p>
 <p>Just doing that didn’t add the map to the page. I needed to draw a rectangle on the blank page — after my mouse cursor had turned into a cross-hair, ensuring that the rectangle filled the whole page:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/add_map_1.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/add_map_1.png" class="img-fluid"></p>
 <p>Before I could add more map elements to the layout, I set the map scale to <code>100000000</code>:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/scale.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/scale.png" class="img-fluid"></p>
 <p>A good map should be balanced, meaning the map body should be centered. I used the <strong>Move Item Content</strong> tool to move the map body to the center of the page:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/move_content.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/move_content.png" class="img-fluid"></p>
 <p>I disregarded Antarctica while repositioning the map, since it only provided context to the map.</p>
 <p>To add the map title, I used the <strong>Add Item</strong> menu and selected the <strong>Add Label</strong> tool:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/add_title_1.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
-<p>Again, drawing the rectangle at the top of the page: <img src="data/add_title.png" class="img-fluid" alt="alt"></p>
+<p><img src="data/add_title_1.png" class="img-fluid"></p>
+<p>Again, drawing the rectangle at the top of the page: <img src="data/add_title.png" class="img-fluid"></p>
 <p>I changed the default text to <code>FIFA Men's World Cup Winners</code> and changed the font to Roboto, giving it the <code>Light</code> style and a font size of 36, with horizontal center alignment:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/title_font.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/title_font.png" class="img-fluid"></p>
 <p>A map title should tell us <strong>what</strong>, <strong>when</strong>, and <strong>where</strong>. I added a subtitle to the map, maintaining a similar font to the main title but reducing the font size to 20:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/subtitle.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/subtitle.png" class="img-fluid"></p>
 <section id="adding-picture-items" class="level3">
 <h3 class="anchored" data-anchor-id="adding-picture-items">Adding picture items</h3>
 <p>I wanted my map to carry the soccer branding, so I added a picture item to the left of the map title:</p>
@@ -534,12 +474,7 @@ ul.task-list li input[type="checkbox"] {
 <p>I finally added a frame of 0.1mm thickness to the legend:</p>
 <p><img src="data/legend_frame.png" class="img-fluid"></p>
 <p>Having added the legend frame, I noticed extra space between the legend items and the frame, this is the default spacing between the legend title and the items. I removed the space below the legend title:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="data/remove_spacing.png" class="img-fluid figure-img"></p>
-<figcaption>alt</figcaption>
-</figure>
-</div>
+<p><img src="data/remove_spacing.png" class="img-fluid"></p>
 </section>
 <section id="adding-a-rectangle" class="level3">
 <h3 class="anchored" data-anchor-id="adding-a-rectangle">Adding a rectangle</h3>
