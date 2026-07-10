@@ -374,7 +374,6 @@
   <category>cartography</category>
   <category>QGIS</category>
   <category>sports</category>
-  <category>FIFA World Cup</category>
   <guid>https://dicksonmbeya.com/blog/posts/world_cup/</guid>
   <pubDate>Thu, 09 Jul 2026 22:00:00 GMT</pubDate>
   <media:content url="https://dicksonmbeya.com/blog/posts/world_cup/world cup.png" medium="image" type="image/png" height="102" width="144"/>
@@ -1823,9 +1822,9 @@ font-style: inherit;">#tmap_save(final_map, "2008_Population.png", width = 10, h
 </section>
 
  ]]></description>
-  <category>Mapping</category>
+  <category>cartograpy</category>
   <category>R</category>
-  <category>POPULATION</category>
+  <category>population</category>
   <guid>https://dicksonmbeya.com/blog/posts/make_popn_map/</guid>
   <pubDate>Sat, 04 Jul 2026 22:00:00 GMT</pubDate>
   <media:content url="https://dicksonmbeya.com/blog/posts/make_popn_map/population.png" medium="image" type="image/png" height="230" width="144"/>
