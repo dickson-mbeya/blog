@@ -10,7 +10,440 @@
 <atom:link href="https://dicksonmbeya.com/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>This blog is dedicated to sharing my experiences as I create maps and analyse GIS and Remote Sensing Data. Topics range from cartography, spatial  data analysis, remote sensing with Google Earth Engine, GIS programming with R and Python and many more.</description>
 <generator>quarto-1.7.32</generator>
-<lastBuildDate>Sat, 04 Jul 2026 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 09 Jul 2026 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Which countries have ever won FIFA Men’s world cup?</title>
+  <dc:creator>Dickson Mbeya</dc:creator>
+  <link>https://dicksonmbeya.com/blog/posts/world_cup/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>With the world cup in progress, I decided to create a map that shows winners of the previous tournaments. I browsed the internet for information and I settled with information I found onM <a href="https://en.wikipedia.org/wiki/FIFA_World_Cup" class="uri">https://en.wikipedia.org/wiki/FIFA_World_Cup</a>. I learnt from this source that as of the 2026 World Cup, 23 final tournaments have been held since the event’s inception in 1930, and a total of 80 national teams have competed. The trophy has been won by eight national teams as follows:</p>
+<ul>
+<li>With five wins, Brazil is the only team to have played in every tournament,</li>
+<li>Germany with four titles,</li>
+<li>Four titles for Italy,</li>
+<li>Argentina, with three titles,</li>
+<li>Two titles for France,</li>
+<li>Uruguay with two titles,</li>
+<li>1 title for England, and</li>
+<li>Spain also winning 1 title.</li>
+</ul>
+<p>As Peter Greenaway said, “<strong><em>A map tells you where you’ve been, where you are, and where you’re going — in a sense it’s three tenses in one.</em></strong>” I decided to put this information on a map.</p>
+<p>Let’s dive in!</p>
+</section>
+<section id="software-choice" class="level2">
+<h2 class="anchored" data-anchor-id="software-choice">Software choice</h2>
+<p>For the mapping tool, I settled for QGIS, the leading open-source desktop GIS. Unlike many Desktop GIS software, QGIS is free, yet rich with analytical and cartographic capabilities. You just need to download it from the <a href="https://qgis.org/">QGIS website</a>. It is cross-platform, available on Windows, Mac, Linux. For this project, I used the most recent QGIS version, QGIS 4.0.</p>
+</section>
+<section id="getting-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="getting-the-data">Getting the data</h2>
+<p>Most of the time, the dataset is not always in a form ready for GIS. We need to prepare data so that we can use it to create maps. All I had was knowledge of winners and participants in text format. How was I going to bring this into GIS?</p>
+<p>I had QGIS software installed already, so I launched the software. I closed the start pop-up window that shows up: <img src="https://dicksonmbeya.com/blog/posts/world_cup/data/launch-pop-up.png" class="img-fluid" alt="QGIS launch pop-up menu"></p>
+<p>I realised I needed the world countries shapefile. I could download the shapefile from places like <a href="https://www.naturalearthdata.com/">Natural Earth</a> but I remembered that by default, QGIS includes a sample, basic world map dataset in its installation files. Entering the word “world” into the Coordinate box tells QGIS to fetch and display this file instantly.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/load-world.png" class="img-fluid figure-img"></p>
+<figcaption>Load world shapefile</figcaption>
+</figure>
+</div>
+</section>
+<section id="explore-the-world-shapefile" class="level2">
+<h2 class="anchored" data-anchor-id="explore-the-world-shapefile">Explore the world shapefile</h2>
+<p>With the world map layer available, I explored the dataset by opening the layer attribute table. I needed to check if perhaps my layer had names of countries which I could use for creating the map. I opened the attribute table by right-clicking on the <strong>World Map</strong> layer in the Layers panel and choosing <strong>Open Attribute Table</strong> in the context menu:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/open attribute table.png" class="img-fluid figure-img"></p>
+<figcaption>Open layer attribute table</figcaption>
+</figure>
+</div>
+<p>The attribute table had a column named <strong>NAME</strong> which had names of countries. I used the information available in the Wikipedia article to select my countries of interest from the attribute table based on this column.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/attribute-table.png" class="img-fluid figure-img"></p>
+<figcaption>Attribute table</figcaption>
+</figure>
+</div>
+</section>
+<section id="saving-the-qgis-project" class="level2">
+<h2 class="anchored" data-anchor-id="saving-the-qgis-project">Saving the QGIS project</h2>
+<p>At this point, I had started doing something in my project. I had added data to the project. I did not want to lose my work should anything happen (loss of power, or accidentally closing my project without saving). To save the project, I could use the keyboard shortcut Ctrl+S (on a Windows machine). Alternatively, I could click on the <strong>Project</strong> menu item and select <strong>Save Project As…</strong> <img src="https://dicksonmbeya.com/blog/posts/world_cup/data/save-as.png" class="img-fluid" alt="Save qgis project"></p>
+<p>I saved the project as world-cup.</p>
+</section>
+<section id="world-cup-participating-nations-in-addition-to-winners" class="level2">
+<h2 class="anchored" data-anchor-id="world-cup-participating-nations-in-addition-to-winners">World cup participating nations in addition to winners</h2>
+<p>I did not just want to show winners of the previous tournaments, but other countries that had ever participated in the tournament as well. To do that, I needed to select the 83 countries that had ever participated in the tournament from the <strong>World Cup</strong> layer.</p>
+<p>These were <code>Algeria, Angola, Argentina, Australia, Austria, Belgium, Bolivia, Bosnia and Herzegovina, Brazil, Bulgaria, Cameroon, Canada, Chile, China, Colombia, Costa Rica, Croatia, Cuba, Czechoslovakia, Czech Republic, Denmark, DR Congo, East Germany, Ecuador, Egypt, El Salvador, England, France, Germany, West Germany, Ghana, Greece, Haiti, Honduras, Hungary, Iceland, Indonesia, Iran, Iraq, Israel, Italy, Ivory Coast, Jamaica, Japan, Kuwait, Mexico, Morocco, Netherlands, New Zealand, Nigeria, North Korea, Northern Ireland, Norway, Panama, Paraguay, Peru, Poland, Portugal, Qatar, Republic of Ireland, Romania, Russia, Saudi Arabia, Scotland, Senegal, Serbia, Slovakia, Slovenia, South Africa, South Korea, Soviet Union, Spain, Sweden, Switzerland, Togo, Trinidad and Tobago, Tunisia, Turkey, Ukraine, United Arab Emirates, United States, Uruguay, Wales, Yugoslavia</code>.</p>
+</section>
+<section id="missing-nations" class="level2">
+<h2 class="anchored" data-anchor-id="missing-nations">Missing nations</h2>
+<p>Checking the list, I realised that some of these names represent teams that no longer exist in that form, such as <code>Czechoslovakia</code>, the <code>Soviet Union</code>, <code>Yugoslavia</code>, and <code>East Germany</code>, whose results are now attributed by FIFA to their recognized successor nations like the <code>Czech Republic</code> and <code>Slovakia</code>, <code>Russia</code>, <code>Serbia</code>, and unified <code>Germany</code> respectively.</p>
+<p>Another thing was that <code>England</code> was not available in my <strong>World Map</strong> layer; rather, my layer had <code>United Kingdom</code>. I decided to use <code>United Kingdom</code> to represent England. By the way, only England has ever won the tournament within the United Kingdom.</p>
+</section>
+<section id="select-the-nations-of-interest-from-the-world-map-layer" class="level2">
+<h2 class="anchored" data-anchor-id="select-the-nations-of-interest-from-the-world-map-layer">Select the nations of interest from the World Map layer</h2>
+<p>There were a few issues I identified with my World Map layer. Some of the names of countries did not match. They had been coded differently. To solve these issues, I decided to use AI assistance to automatically identify all names of countries that did not match, and to align the names accordingly.</p>
+<p>But before I could use AI, I needed to extract all country names, which I would compare with the list above. I couldn’t quickly find a way of copying all the names in the attribute table, so I resorted to exporting the layer to CSV.</p>
+<p>I did this by right-clicking on the <strong>World Map</strong> layer in the Layers panel and then selecting <strong>Export &gt; Save Feature As…</strong></p>
+<p>In the <strong>Save Vector Layer as…</strong> dialog, I chose the <strong>Comma Separated Value (CSV)</strong>. Since the <strong>World Map</strong> layer contained more than the field of interest, specifying the field to save was necessary. <img src="https://dicksonmbeya.com/blog/posts/world_cup/data/save-csv.png" class="img-fluid" alt="Save layer as csv"></p>
+<p>I saved the file as <strong>world countries.csv</strong>.</p>
+<p>I was then ready to visit <a href="https://claude.ai/new">Claude.ai</a> and enter a prompt that would help me sort the issues. Since I had my CSV file already, I attached it and then copied the names of countries that participated in the World Cup up to 2022, highlighted above, and framed my prompt as below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/claude-prompt.png" class="img-fluid figure-img"></p>
+<figcaption>Claude ai prompt</figcaption>
+</figure>
+</div>
+<p>Claude identified names that required remapping to match the names in the World Map layer data:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>List</th>
+<th>Layer’s NAME</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bosnia and Herzegovina</td>
+<td>Bosnia and Herz.</td>
+</tr>
+<tr class="even">
+<td>Czech Republic</td>
+<td>Czechia</td>
+</tr>
+<tr class="odd">
+<td>DR Congo</td>
+<td>Dem. Rep.&nbsp;Congo</td>
+</tr>
+<tr class="even">
+<td>Ivory Coast</td>
+<td>Côte d’Ivoire</td>
+</tr>
+<tr class="odd">
+<td>Republic of Ireland</td>
+<td>Ireland</td>
+</tr>
+<tr class="even">
+<td>United States</td>
+<td>United States of America</td>
+</tr>
+</tbody>
+</table>
+<p>Again, the following names did not have any matching names in the layer:</p>
+<ul>
+<li>Czechoslovakia, East Germany, West Germany, Soviet Union, Yugoslavia — these are historical/dissolved states, not present in modern admin-0 layers</li>
+<li>England, Northern Ireland, Scotland, Wales: these are constituent countries of the United Kingdom, not separate features (only “United Kingdom” exists)</li>
+</ul>
+<p>I asked Claude to create an SQL query with corrected and matched names, which I would use to select all countries in QGIS that participated in the World Cup by 2022:</p>
+<p><code>SELECT * FROM world_countries WHERE NAME IN (   'Algeria', 'Angola', 'Argentina', 'Australia', 'Austria', 'Belgium',   'Bolivia', 'Bosnia and Herz.', 'Brazil', 'Bulgaria', 'Cameroon', 'Canada',   'Chile', 'China', 'Colombia', 'Costa Rica', 'Croatia', 'Cuba', 'Czechia',   'Denmark', 'Dem. Rep. Congo', 'Ecuador', 'Egypt', 'El Salvador', 'France',   'Germany', 'Ghana', 'Greece', 'Haiti', 'Honduras', 'Hungary', 'Iceland',   'Indonesia', 'Iran', 'Iraq', 'Israel', 'Italy', "Côte d'Ivoire", 'Jamaica',   'Japan', 'Kuwait', 'Mexico', 'Morocco', 'Netherlands', 'New Zealand',   'Nigeria', 'North Korea', 'Norway', 'Panama', 'Paraguay', 'Peru', 'Poland',   'Portugal', 'Qatar', 'Ireland', 'Romania', 'Russia', 'Saudi Arabia',   'Senegal', 'Serbia', 'Slovakia', 'Slovenia', 'South Africa', 'South Korea',   'Spain', 'Sweden', 'Switzerland', 'Togo', 'Trinidad and Tobago', 'Tunisia',   'Turkey', 'Ukraine', 'United Arab Emirates', 'United States of America',   'Uruguay', 'United Kingdom' );</code></p>
+<p>In QGIS, I then opened the Query Builder by right-clicking on the World Map layer in the Layers panel and selecting <strong>Properties… &gt; Source</strong> tab, then expanding <strong>Provide Feature Filter</strong> and clicking the <strong>Query Builder</strong> button:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/sql_query.png" class="img-fluid figure-img"></p>
+<figcaption>QGIS Query Builder</figcaption>
+</figure>
+</div>
+<p>I then pasted the SQL expression from Claude into the query builder: <img src="https://dicksonmbeya.com/blog/posts/world_cup/data/sql_query.png" class="img-fluid" alt="sql"></p>
+<p>When I clicked the <strong>OK</strong> button, I received an error that the table <strong>World</strong> didn’t exist. You may get a different reference for the table name, such as <strong>world_countries</strong>. It appears the word <code>Map</code> is a reserved word in SQL (Map is part of SQL vocabulary).</p>
+<p>I then renamed the <strong>World Map</strong> layer to <strong>world_map</strong> by right-clicking on the layer and opening the <strong>Source</strong> tab in the Layer Properties window, then editing the layer name.</p>
+<p>I further exported the layer as a shapefile named <strong>world_map</strong>.</p>
+<p>I needed to run the SQL query again, but this time working with the new shapefile, ensuring that my query used the correct layer name, <strong>world_map</strong>.</p>
+<p><code>SELECT * FROM world_map WHERE NAME IN (   'Algeria', 'Angola', 'Argentina', 'Australia', 'Austria', 'Belgium',   'Bolivia', 'Bosnia and Herz.', 'Brazil', 'Bulgaria', 'Cameroon', 'Canada',   'Chile', 'China', 'Colombia', 'Costa Rica', 'Croatia', 'Cuba', 'Czechia',   'Denmark', 'Dem. Rep. Congo', 'Ecuador', 'Egypt', 'El Salvador', 'France',   'Germany', 'Ghana', 'Greece', 'Haiti', 'Honduras', 'Hungary', 'Iceland',   'Indonesia', 'Iran', 'Iraq', 'Israel', 'Italy', 'Côte d''Ivoire', 'Jamaica',   'Japan', 'Kuwait', 'Mexico', 'Morocco', 'Netherlands', 'New Zealand',   'Nigeria', 'North Korea', 'Norway', 'Panama', 'Paraguay', 'Peru', 'Poland',   'Portugal', 'Qatar', 'Ireland', 'Romania', 'Russia', 'Saudi Arabia',   'Senegal', 'Serbia', 'Slovakia', 'Slovenia', 'South Africa', 'South Korea',   'Spain', 'Sweden', 'Switzerland', 'Togo', 'Trinidad and Tobago', 'Tunisia',   'Turkey', 'Ukraine', 'United Arab Emirates', 'United States of America',   'Uruguay', 'United Kingdom' )</code></p>
+<p>76 rows/countries were selected. These represent the nations that participated in the World Cup tournament between 1930 and 2022.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/world_cup_participants.png" class="img-fluid figure-img"></p>
+<figcaption>World cup participants</figcaption>
+</figure>
+</div>
+<p>One more thing before I could start making the final map: I needed another layer for World Cup winners. Since I already had my World Cup participants layer, all I did was duplicate this same layer in the Layers panel, clear the previous SQL expression, and build another one that would select the names of nations that have ever won the World Cup tournament.</p>
+<p>I renamed the filtered <strong>world_map</strong> layer to world_cup_participants. Then I created another layer from it by right-clicking on the layer and selecting <strong>Duplicate Layer</strong>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/duplicate_layer.png" class="img-fluid figure-img"></p>
+<figcaption>Duplicate QGIS Layer</figcaption>
+</figure>
+</div>
+<p>The duplicate layer draws at the bottom of the original layer in the Layers panel. I moved the duplicate to the top of all the layers in the Layers panel by right-clicking on it and selecting <strong>Move to Top</strong>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/move_top.png" class="img-fluid figure-img"></p>
+<figcaption>Move QGIS Layer top</figcaption>
+</figure>
+</div>
+<p>I then renamed the duplicate layer to world_cup_winners and made it active on the map by clicking the checkbox of the layer in the Layers panel:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/checkbox.png" class="img-fluid figure-img"></p>
+<figcaption>Activate QGIS Map layer</figcaption>
+</figure>
+</div>
+<p>To select countries that have ever won the World Cup, I needed to revise the SQL query as follows:</p>
+<p><code>SELECT * FROM world_map WHERE NAME IN (   'Argentina', 'Brazil', 'France', 'Germany', 'Italy', 'Spain',   'United Kingdom', 'Uruguay' )</code></p>
+<p>Note that I kept the old name <code>world_map</code> in the SQL query, because although the layer is displayed as the duplicate in the panel, the actual file on disk is still world_map:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/world_cup_winners sql.png" class="img-fluid figure-img"></p>
+<figcaption>QGIS sql query</figcaption>
+</figure>
+</div>
+<p>Again, here I used United Kingdom to represent England, and Germany to represent the former East Germany.</p>
+<p>Unchecking the participants layer helped me clearly see the nations that had ever won the tournament. This was necessary because the <code>world_cup_participants</code> layer and the <code>world_cup_winners</code> layer had similar colors on the map:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/uncheck.png" class="img-fluid figure-img"></p>
+<figcaption>Uncheck QGIS map layer</figcaption>
+</figure>
+</div>
+<p>With all the map layers available in my QGIS project, I could then move on to make the final map.</p>
+</section>
+<section id="styling-map-layers-for-the-final-map" class="level2">
+<h2 class="anchored" data-anchor-id="styling-map-layers-for-the-final-map">Styling map layers for the final map</h2>
+<p>I decided to style my world_map layer with a gray fill color, <code>#e0e0e0</code>, and a white stroke color with a stroke width of <code>0.26</code>. This was achieved by right-clicking on the <strong>world_map</strong> layer and opening the layer’s <strong>Properties</strong>. In the <strong>Layer Properties</strong> window, I selected the <strong>Symbology</strong> tab: <img src="https://dicksonmbeya.com/blog/posts/world_cup/data/symbology.png" class="img-fluid" alt="QGIS Symbology tab"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/choose color.png" class="img-fluid figure-img"></p>
+<figcaption>Choose QGIS layer color</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/colorpicker.png" class="img-fluid figure-img"></p>
+<figcaption>Select QGIS layer color</figcaption>
+</figure>
+</div>
+<p>This layer was only useful for giving context, hence the choice of a non-dominant color.</p>
+<p>I followed the same process to give a green color, <code>#55793f</code>, to World Cup participants, and a golden color, <code>#e6ba32</code>, to countries that have ever won the tournament:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/styled_map.png" class="img-fluid figure-img"></p>
+<figcaption>QGIS Map</figcaption>
+</figure>
+</div>
+<p>Convinced with my layer styles, I moved on to create the map layout.</p>
+</section>
+<section id="choosing-a-compromise-projection" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-compromise-projection">Choosing a compromise projection</h2>
+<p>When creating a map of the world, I like choosing a map projection that minimises the distortion of landmasses. For this map, I chose the Gall Stereographic map projection, <code>ESRI:54016</code>, which is a cylindrical map projection developed by Scottish clergyman James Gall in 1855. It’s a compromise projection which is neither conformal (doesn’t preserve shape/angles) nor equal-area (doesn’t preserve area). It’s meant to balance distortion reasonably across the whole map, similar in spirit to the Robinson or Miller projections.</p>
+<p>By default my map was not projected — it had the geographic coordinate system, <code>EPSG:4326</code>. To fix this, I opened the project’s properties:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/project_properties.png" class="img-fluid figure-img"></p>
+<figcaption>QGIS Project Properties</figcaption>
+</figure>
+</div>
+<p>and then searched for and selected <code>ESRI:54016</code> in the CRS tab:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/project_crs_properties.png" class="img-fluid figure-img"></p>
+<figcaption>QGIS Project CRS Properties</figcaption>
+</figure>
+</div>
+<p>giving me the desired look:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/projected map.png" class="img-fluid figure-img"></p>
+<figcaption>Project map</figcaption>
+</figure>
+</div>
+<p>At this point, I was ready to move on to the <strong>Print Layout</strong> to make the final map.</p>
+</section>
+<section id="map-layout" class="level2">
+<h2 class="anchored" data-anchor-id="map-layout">Map layout</h2>
+<p>The Print Layout is opened via the <strong>Project</strong> menu item:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/print_layout.png" class="img-fluid figure-img"></p>
+<figcaption>Open QGIS Print Layout</figcaption>
+</figure>
+</div>
+<p>I named the new Print Layout <strong>World Cup</strong>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/print_layout_name.png" class="img-fluid figure-img"></p>
+<figcaption>QGIS Print Layout name</figcaption>
+</figure>
+</div>
+<p>I remembered that I had not labelled my map polygons. I went back to my map and, after right-clicking on the <code>world_cup_participants</code> layer in the Layers panel, I selected <strong>Show Labels</strong> in the context menu:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/show_labels.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>Nothing showed on the map even after I had selected <strong>Show Labels</strong>. I needed to tell QGIS which field values would be used to label the polygons. To do that, I opened the Layer Properties of the <code>world_cup_participants</code> layer. In the Layer Properties dialog, I selected the <strong>Labels</strong> tab. In the <strong>Value</strong> field, I selected the <strong>NAME</strong> field. For the <strong>Text</strong>, I selected the <strong>Roboto</strong> font, <strong>Regular</strong> style, and reduced the default size to 6.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/label_text.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>To make sure the labels stood out against the background, I gave the text a white buffer of size 0.5 with 50% opacity:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/buffer_text.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>As a final touch to my labels, I enabled <strong>Draw drop shadow</strong>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/shadow.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>I was happy with my map labels, so I continued working in the Print Layout:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/labeled_map.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+</section>
+<section id="adding-items-to-the-map-layout" class="level2">
+<h2 class="anchored" data-anchor-id="adding-items-to-the-map-layout">Adding items to the Map Layout</h2>
+<p>To add the map to the layout, I used the <strong>Add Item</strong> menu and then selected <strong>Add Map</strong>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_map.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>Just doing that didn’t add the map to the page. I needed to draw a rectangle on the blank page — after my mouse cursor had turned into a cross-hair, ensuring that the rectangle filled the whole page:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_map_1.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>Before I could add more map elements to the layout, I set the map scale to <code>100000000</code>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/scale.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>A good map should be balanced, meaning the map body should be centered. I used the <strong>Move Item Content</strong> tool to move the map body to the center of the page:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/move_content.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>I disregarded Antarctica while repositioning the map, since it only provided context to the map.</p>
+<p>To add the map title, I used the <strong>Add Item</strong> menu and selected the <strong>Add Label</strong> tool:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_title_1.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>Again, drawing the rectangle at the top of the page: <img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_title.png" class="img-fluid" alt="alt"></p>
+<p>I changed the default text to <code>FIFA Men's World Cup Winners</code> and changed the font to Roboto, giving it the <code>Light</code> style and a font size of 36, with horizontal center alignment:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/title_font.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<p>A map title should tell us <strong>what</strong>, <strong>when</strong>, and <strong>where</strong>. I added a subtitle to the map, maintaining a similar font to the main title but reducing the font size to 20:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/subtitle.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+<section id="adding-picture-items" class="level3">
+<h3 class="anchored" data-anchor-id="adding-picture-items">Adding picture items</h3>
+<p>I wanted my map to carry the soccer branding, so I added a picture item to the left of the map title:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_picture.png" class="img-fluid"></p>
+<p>I selected the soccer SVG symbol from the <strong>SVG Images</strong>:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_svg.png" class="img-fluid"></p>
+<p>and resized the SVG image appropriately.</p>
+<p>Since the map is about World Cup winners and participants, adding something that depicts championship felt appropriate. I decided to add a trophy image to the right of the title. The trophy image can be downloaded from <a href="https://ibb.co/8DvcVD9b">here</a>:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_trophy.png" class="img-fluid"></p>
+<p>It was necessary to keep the icon at a minimal size.</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/map_with_icons.png" class="img-fluid"></p>
+</section>
+<section id="adding-a-map-legend" class="level3">
+<h3 class="anchored" data-anchor-id="adding-a-map-legend">Adding a map legend</h3>
+<p>My map lacked a legend, which defines exactly what each symbol, color, and line represents on the map. I added the legend and placed it at the bottom-center of the map, just below the African continent:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_legend.png" class="img-fluid"></p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/legend.png" class="img-fluid"></p>
+<p>I needed to edit the map legend item labels so that the final map would not show underscores in the labels. Also, since the title had already captured the term “<strong><em>World Cup</em></strong>,” there was no need to repeat it in the legend item labels. I renamed <strong>world_cup_winners</strong> to <strong>Champions</strong> and <strong>world_cup_participants</strong> to <strong>Participants</strong>.</p>
+<p>This was achieved by first changing the legend properties to manual configuration:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/manual_legend.png" class="img-fluid"></p>
+<p>and selecting each legend item and clicking the <strong>Edit selected item properties</strong> button:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/edit_legend.png" class="img-fluid"></p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/edit_champions.png" class="img-fluid"></p>
+<p>The world_map legend item was not necessary, since it only pointed to the context layer, so I removed it:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/remove_legend_item.png" class="img-fluid"></p>
+<p>I finally added a frame of 0.1mm thickness to the legend:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/legend_frame.png" class="img-fluid"></p>
+<p>Having added the legend frame, I noticed extra space between the legend items and the frame, this is the default spacing between the legend title and the items. I removed the space below the legend title:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/remove_spacing.png" class="img-fluid figure-img"></p>
+<figcaption>alt</figcaption>
+</figure>
+</div>
+</section>
+<section id="adding-a-rectangle" class="level3">
+<h3 class="anchored" data-anchor-id="adding-a-rectangle">Adding a rectangle</h3>
+<p>I added a rectangle to contain all the map elements:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_rectangle.png" class="img-fluid"></p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/edit_rectangle.png" class="img-fluid"></p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/simple_outline.png" class="img-fluid"></p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/map_with_rectangle.png" class="img-fluid"></p>
+<p>The map was almost complete. But I remembered that the sources indicated Brazil was the only country to have participated in every tournament, and that I had combined the UK constituents. I wanted this information placed on the map to give readers more context.</p>
+</section>
+<section id="adding-ancillary-text" class="level3">
+<h3 class="anchored" data-anchor-id="adding-ancillary-text">Adding ancillary text</h3>
+<p>I added the text <code>Brazil is the only country to have played in every tournament. Note: UK constituents have been combined.</code> and placed it in the lower-left corner of the map.</p>
+<p>I also added the data source, <code>Data Source: https://en.wikipedia.org/wiki/FIFA_World_Cup</code>, and signed my work as the cartographer: <code>© 2026 Dickson Mbeya</code>.</p>
+</section>
+<section id="adding-the-qgis-swag" class="level3">
+<h3 class="anchored" data-anchor-id="adding-the-qgis-swag">Adding the QGIS swag</h3>
+<p>The final touch to the map was a little flex: I added the <strong>Made with QGIS</strong> logo to show off the software behind it, placing it in the lower-left corner:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/add_qgis_logo.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="lessons-learnt" class="level2">
+<h2 class="anchored" data-anchor-id="lessons-learnt">Lessons learnt</h2>
+<p>A few things worth remembering for next time:</p>
+<ul>
+<li><strong>Name matching is the real work.</strong> Country name mismatches between data sources and reference layers are near-guaranteed, build in time for this step.</li>
+<li><strong>Reserved words can break queries silently.</strong> A layer named <code>World Map</code> failed the SQL query builder simply because <code>Map</code> is SQL vocabulary. Rename layers to avoid ambiguity.</li>
+<li><strong>Duplicate layers keep referencing the original source.</strong> When duplicating a layer, remember the underlying file name, not the panel display name, is what your queries must reference.</li>
+<li><strong>Historical and constituent nations need a documented decision.</strong> Dissolved states (USSR, Yugoslavia, Czechoslovakia, East/West Germany) and UK constituents don’t map cleanly onto modern admin-0 layers. Decide how to handle them early, and disclose the choice on the map itself.</li>
+</ul>
+</section>
+<section id="behold-the-final-map" class="level2">
+<h2 class="anchored" data-anchor-id="behold-the-final-map">Behold, the final map!</h2>
+<p>The map was ready for exporting, as an image, PDF, and more:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/export_map.png" class="img-fluid"></p>
+<p>I exported the map as an image:</p>
+<p><img src="https://dicksonmbeya.com/blog/posts/world_cup/data/World Cup.png" class="img-fluid"></p>
+<p><em>Happy mapping, everyone!</em><br>
+<em>– Dickson</em></p>
+
+
+</section>
+
+ ]]></description>
+  <category>cartography</category>
+  <category>QGIS</category>
+  <category>sports</category>
+  <category>FIFA World Cup</category>
+  <guid>https://dicksonmbeya.com/blog/posts/world_cup/</guid>
+  <pubDate>Thu, 09 Jul 2026 22:00:00 GMT</pubDate>
+  <media:content url="https://dicksonmbeya.com/blog/posts/world_cup/data/world cup.png" medium="image" type="image/png" height="102" width="144"/>
+</item>
 <item>
   <title>Mapping COP16: Cali, Colombia’s City of Peace with Nature</title>
   <dc:creator>Dickson Mbeya</dc:creator>

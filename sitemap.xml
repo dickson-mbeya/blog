@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://dicksonmbeya.com/blog/posts/world_cup/index.html</loc>
+    <lastmod>2026-07-10T21:15:30.942Z</lastmod>
+  </url>
+  <url>
     <loc>https://dicksonmbeya.com/blog/posts/make_popn_map/index.html</loc>
     <lastmod>2026-07-05T22:43:18.833Z</lastmod>
   </url>
@@ -15,5 +19,9 @@
   <url>
     <loc>https://dicksonmbeya.com/blog/posts/cop16/index.html</loc>
     <lastmod>2026-07-05T22:40:53.923Z</lastmod>
+  </url>
+  <url>
+    <loc>https://dicksonmbeya.com/blog/posts/world_cup/data/world_map.html</loc>
+    <lastmod>2026-07-08T08:24:12.499Z</lastmod>
   </url>
 </urlset>
